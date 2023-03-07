@@ -74,3 +74,6 @@ Ajitsaria, A. (n.d.). Logging in Python. Retrieved March 7, 2023, from https://r
 YouTube. (2022, October 6). Sphinx - how to generate documentation from python DOC strings - five + minutes on tips and tricks. YouTube. Retrieved March 7, 2023, from https://www.youtube.com/watch?v=BWIrhgCAae0&amp;ab_channel=LearnProgrammingwithJoel 
 
 Toptal.com, 2023, https://www.toptal.com/developers/gitignore/api/python. Accessed 7 Mar. 2023.
+
+# Test Environment
+![](https://img.shields.io/badge/Python%203.7-14354C?style=for-the-badge&logo=python&logoColor=white) ![](https://img.shields.io/badge/NVIDIA-RTX3060-76B900?style=for-the-badge&logo=nvidia&logoColor=white) ![](https://img.shields.io/badge/Windows%2011-Dell_G15_5511-0078D6?style=for-the-badge&logo=windows&logoColor=white)
