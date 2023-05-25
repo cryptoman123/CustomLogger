@@ -12,6 +12,7 @@ pip install custom logger
 
 
 ## Usage
+```bash
 mkdir docs
 cd docs
 sphinx-quickstart <defaults>
@@ -29,8 +30,9 @@ extensions = [
 html_theme = 'sphinx_rtd_theme'
 
 sphinx-apidoc -o . ..
-creates .rst for each python file
+# creates .rst for each python file
 make html
+```
 
 
 ```python
@@ -62,7 +64,11 @@ Please make sure to update tests as appropriate.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+![GitHub](https://img.shields.io/github/license/cryptoman123/nvidia-docker-and-docker?style=for-the-badge)
+
+
+# Test Environment
+![](https://img.shields.io/badge/Python%203.7-14354C?style=for-the-badge&logo=python&logoColor=white) ![](https://img.shields.io/badge/Windows-11-0078D6?style=for-the-badge&logo=windows&logoColor=white) ![](https://img.shields.io/badge/Ubuntu-22.04LTS-E95420?style=for-the-badge&logo=ubuntu&logoColor=orange)
 
 # Reference
 Sajip, V. (n.d.). Logging HOWTO. Python Documentation. Retrieved March 7, 2023, from https://docs.python.org/3/howto/logging.html
@@ -75,5 +81,4 @@ YouTube. (2022, October 6). Sphinx - how to generate documentation from python D
 
 Toptal.com, 2023, https://www.toptal.com/developers/gitignore/api/python. Accessed 7 Mar. 2023.
 
-# Test Environment
-![](https://img.shields.io/badge/Python%203.7-14354C?style=for-the-badge&logo=python&logoColor=white) ![](https://img.shields.io/badge/NVIDIA-RTX3060-76B900?style=for-the-badge&logo=nvidia&logoColor=white) ![](https://img.shields.io/badge/Windows%2011-Dell_G15_5511-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+mssqltips.com, 2023, Create a Python Wheel File to Package and Distribute Custom Code By Ron L'Esteve, https://www.mssqltips.com/sqlservertip/6802/create-wheel-file-python-package-distribute-custom-code/. Accessed 26 May. 2023.

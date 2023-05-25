@@ -3,38 +3,34 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 
-
-class LogLevelMissMAtch(Exception):
-    """Exception raised for errors in the Logger Level."""
-    def __init__(self, message="Log level miss match", level=logging.NOTSET):
-        super().__init__(f"Your log level is {level}, {message}")
+from .exceptions import LogLevelMissMatch
 
 
 class LoggerInteface(ABC):
 
     @abstractmethod
     def debug(self, message: str):
-        """Abstrat method to be implemented"""
+        """Abstract method to be implemented"""
         ...
 
     @abstractmethod
     def info(self, message: str):
-        """Abstrat method to be implemented"""
+        """Abstract method to be implemented"""
         ...
 
     @abstractmethod
     def warning(self, message: str):
-        """Abstrat method to be implemented"""
+        """Abstract method to be implemented"""
         ...
 
     @abstractmethod
     def error(self, message: str):
-        """Abstrat method to be implemented"""
+        """Abstract method to be implemented"""
         ...
 
     @abstractmethod
     def critical(self, message: str):
-        """Abstrat method to be implemented"""
+        """Abstract method to be implemented"""
         ...
 
 
@@ -361,7 +357,7 @@ class Logger(LoggerInteface):
         return f_handler
 
     def _return_logger(self,
-                       name: str = __name__,
+                      name: str = __name__,
                       level: int = logging.DEBUG,
                       file: bool = False,
                       console: bool = True,
@@ -412,35 +408,35 @@ class Logger(LoggerInteface):
         if self._level >= logging.DEBUG:
             self._logger.debug(message)
         else:
-            raise LogLevelMissMAtch("You tried to create a Log Record of DEBUG", self._level)
+            raise LogLevelMissMatch("You tried to create a Log Record of DEBUG", self._level)
 
     def info(self, message: str):
         """Write INFO level Log Record"""
         if self._level >= logging.INFO:
             self._logger.info(message)
         else:
-            raise LogLevelMissMAtch("You tried to create a Log Record of INFO", self._level)
+            raise LogLevelMissMatch("You tried to create a Log Record of INFO", self._level)
 
     def warning(self, message: str):
         """Write WARNING level Log Record"""
         if self._level >= logging.WARNING:
             self._logger.warning(message)
         else:
-            raise LogLevelMissMAtch("You tried to create a Log Record of WARNING", self._level)
+            raise LogLevelMissMatch("You tried to create a Log Record of WARNING", self._level)
 
     def error(self, message: str):
         """Write ERROR level Log Record"""
         if self._level >= logging.ERROR:
             self._logger.error(message)
         else:
-            raise LogLevelMissMAtch("You tried to create a Log Record of ERROR", self._level)
+            raise LogLevelMissMatch("You tried to create a Log Record of ERROR", self._level)
 
     def critical(self, message: str):
         """Write CRITICAL level Log Record"""
         if self._level >= logging.CRITICAL:
             self._logger.critical(message)
         else:
-            raise LogLevelMissMAtch("You tried to create a Log Record of CRITICAL", self._level)
+            raise LogLevelMissMatch("You tried to create a Log Record of CRITICAL", self._level)
 
 
 if __name__ == "__main__":
