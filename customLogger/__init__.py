@@ -1,6 +1,5 @@
-from .logger import LoggerInteface, Logger
-from .exceptions import LogLevelMissMatch
-
+from .logger import LoggingInteface, Logging
+from .exceptions import LogLevelMissMatch, IllegalAssignment
 
 __author__ = "Shahram Khalid"
 __version__ = "0.0.1"

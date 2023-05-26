@@ -3,10 +3,10 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 
-from .exceptions import LogLevelMissMatch
+from .exceptions import LogLevelMissMatch, IllegalAssignment
 
 
-class LoggerInteface(ABC):
+class LoggingInteface(ABC):
 
     @abstractmethod
     def debug(self, message: str):
@@ -34,33 +34,43 @@ class LoggerInteface(ABC):
         ...
 
 
-class Logger(LoggerInteface):
+class Logging(LoggingInteface):
 
-    def __new__(cls, 
-                name: str = __name__,
-                level: int = logging.DEBUG,
-                filename: str = f"default_{__name__}.log",
-                filemode: str = "a",
-                format: str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                datefmt='%d-%b-%y %H:%M:%S') -> logging.Logger:
+    levels: dict = {
+        "critical": logging.CRITICAL,
+        "error": logging.ERROR,
+        "warning": logging.WARNING,
+        "info": logging.INFO,
+        "debug": logging.DEBUG,
+        "notset": logging.NOTSET
+    }
 
-        return cls._return_logger(name, level, filename, format, datefmt)
-    
     def __init__(self,
                  name: str = __name__,
                  level: int = logging.DEBUG,
+                 file: bool = True,
                  filename: str = f"default_{__name__}.log",
                  filemode: str = "a",
                  format: str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                  datefmt='%d-%b-%y %H:%M:%S') -> None:
         super().__init__()
         self._name: str = name
-        self._level: int = level
+        self._level: int = Logging.levels[level] if type(level) == str else level
+        self._file: bool = file
         self._filename: str = filename
         self._filemode: str = filemode
         self._format: str = format
         self._datefmt: str = datefmt
-        self._logger: logging.Logger = logging.getLogger(name)
+        self._logger: logging.Logger = self._return_logger(
+            name=self._name,
+            level_=self._level,
+            file = True if self._file else False,
+            console= True if not self._file else False,
+            filename=self._filename,
+            filemode=self._filemode,
+            format=self._format,
+            datefmt=self._datefmt
+        )
 
     @property
     def name(self) -> str:
@@ -187,6 +197,30 @@ class Logger(LoggerInteface):
         :rtype: None
         """
         self._filename = value
+
+    @property
+    def file(self) -> bool:
+        """True if `self._logger` set to write logs to a file.
+        
+        :param self:
+        :type self: bool
+        :return: level of the logger
+        :rtype: str
+        """
+        return self._file
+    
+    @filename.setter
+    def file(self, value: bool):
+        """set it to True if `self._logger` set to write logs to a file.
+        
+        :param self:
+        :type self: Logger
+        :param value: The name you want the logger to be.
+        :type value: str
+        :return: None
+        :rtype: None
+        """
+        self._file = value
 
     @property
     def filemode(self) -> str:
@@ -316,6 +350,40 @@ class Logger(LoggerInteface):
         """
         self._datefmt = value
 
+    @property
+    def logger(self) -> str:
+        """"Get the format of date which is logged into the message
+        
+        For checking out how to format the date, see `datefmt <https://docs.python.org/3/library/time.html#time.strftime>`_
+
+        :param self:
+        :type self: Logger
+        :return: The format of the date
+        :rtype: str
+        """
+        return self._return_logger(
+            name=self._name,
+            level_=self._level,
+            file=True if self._filename else False,
+
+        )
+
+    
+    @logger.setter
+    def logger(self, value):
+        """Set the format of date which is logged into the message
+
+        For checking out how to format the date, see `datefmt <https://docs.python.org/3/library/time.html#time.strftime>`_
+
+        :param self:
+        :type self: Logger
+        :param value: The format of the date
+        :type: str
+        :return: None
+        :rtype: None
+        """
+        raise IllegalAssignment()
+
     def getConsoleHandler(
             self,
             level: int = logging.DEBUG,
@@ -350,7 +418,7 @@ class Logger(LoggerInteface):
         :return: file handler
         :rtype: logging.FileHandler
         """
-        f_handler = logging.FileHandler(filename=filename, filemode=filemode, encoding="UTF-8")
+        f_handler = logging.FileHandler(filename=filename, mode=filemode, encoding="UTF-8")
         f_handler.setLevel(level)
         f_format = logging.Formatter(format)
         f_handler.setFormatter(f_format)
@@ -358,9 +426,9 @@ class Logger(LoggerInteface):
 
     def _return_logger(self,
                       name: str = __name__,
-                      level: int = logging.DEBUG,
+                      level_: int = logging.DEBUG,
                       file: bool = False,
-                      console: bool = True,
+                      console: bool = False,
                       filename: str = f"{__name__}.log",
                       filemode: str = "a",
                       format: str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -388,55 +456,57 @@ class Logger(LoggerInteface):
         :return: Logger
         :rtype logging.Logger:
         """
-        self._logger.setLevel(logging.DEBUG)  # Root logger
+        self._logger = logging.getLogger(name)
+        self._logger.setLevel(level_)  # Root logger
 
         if file:
             # Add a file handler
-            f_handler = self.getFileHandler(filename=filename, filemode=filemode, level=level, format=format)
+            f_handler = self.getFileHandler(filename=filename, filemode=filemode, level=level_, format=format)
             self._logger.addHandler(f_handler)
 
 
         if console:
             # Add a Stream Handler
-            c_handler = self.getConsoleHandler(level=level, format=format)
+            c_handler = self.getConsoleHandler(level=level_, format=format)
             self._logger.addHandler(c_handler)
 
         return self._logger
 
     def debug(self, message: str):
         """Write DEBUG level Log Record"""
-        if self._level >= logging.DEBUG:
+        if self._level <= logging.DEBUG:
             self._logger.debug(message)
         else:
-            raise LogLevelMissMatch("You tried to create a Log Record of DEBUG", self._level)
+            raise LogLevelMissMatch(f"You tried to create a Log Record of DEBUG <{self._level} <= {logging.DEBUG}>", self._level)
 
     def info(self, message: str):
         """Write INFO level Log Record"""
-        if self._level >= logging.INFO:
+        if self._level <= logging.INFO:
             self._logger.info(message)
         else:
-            raise LogLevelMissMatch("You tried to create a Log Record of INFO", self._level)
+            raise LogLevelMissMatch(f"You tried to create a Log Record of INFO <{self._level} <= {logging.INFO}>", self._level)
 
     def warning(self, message: str):
         """Write WARNING level Log Record"""
-        if self._level >= logging.WARNING:
+        if self._level <= logging.WARNING:
             self._logger.warning(message)
         else:
-            raise LogLevelMissMatch("You tried to create a Log Record of WARNING", self._level)
+            raise LogLevelMissMatch(f"You tried to create a Log Record of WARNING <{self._level} <= {logging.WARNING}>", self._level)
 
     def error(self, message: str):
         """Write ERROR level Log Record"""
-        if self._level >= logging.ERROR:
+        if self._level <= logging.ERROR:
             self._logger.error(message)
         else:
-            raise LogLevelMissMatch("You tried to create a Log Record of ERROR", self._level)
+            raise LogLevelMissMatch(f"You tried to create a Log Record of ERROR <{self._level} <= {logging.ERROR}>", self._level)
 
     def critical(self, message: str):
         """Write CRITICAL level Log Record"""
-        if self._level >= logging.CRITICAL:
+        if self._level <= logging.CRITICAL:
             self._logger.critical(message)
         else:
-            raise LogLevelMissMatch("You tried to create a Log Record of CRITICAL", self._level)
+            raise LogLevelMissMatch(f"You tried to create a Log Record of CRITICAL <{self._level} <= {logging.CRITICAL}>", self._level)
+        
 
 
 if __name__ == "__main__":
