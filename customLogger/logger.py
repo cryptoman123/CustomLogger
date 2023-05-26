@@ -477,6 +477,7 @@ class Logging(LoggingInteface):
         if self._level <= logging.DEBUG:
             self._logger.debug(message)
         else:
+            return
             raise LogLevelMissMatch(f"You tried to create a Log Record of DEBUG <{self._level} <= {logging.DEBUG}>", self._level)
 
     def info(self, message: str):
@@ -484,6 +485,7 @@ class Logging(LoggingInteface):
         if self._level <= logging.INFO:
             self._logger.info(message)
         else:
+            return
             raise LogLevelMissMatch(f"You tried to create a Log Record of INFO <{self._level} <= {logging.INFO}>", self._level)
 
     def warning(self, message: str):
@@ -491,6 +493,7 @@ class Logging(LoggingInteface):
         if self._level <= logging.WARNING:
             self._logger.warning(message)
         else:
+            return
             raise LogLevelMissMatch(f"You tried to create a Log Record of WARNING <{self._level} <= {logging.WARNING}>", self._level)
 
     def error(self, message: str):
@@ -498,6 +501,7 @@ class Logging(LoggingInteface):
         if self._level <= logging.ERROR:
             self._logger.error(message)
         else:
+            return
             raise LogLevelMissMatch(f"You tried to create a Log Record of ERROR <{self._level} <= {logging.ERROR}>", self._level)
 
     def critical(self, message: str):
@@ -505,9 +509,9 @@ class Logging(LoggingInteface):
         if self._level <= logging.CRITICAL:
             self._logger.critical(message)
         else:
+            return
             raise LogLevelMissMatch(f"You tried to create a Log Record of CRITICAL <{self._level} <= {logging.CRITICAL}>", self._level)
         
-
 
 if __name__ == "__main__":
     pass
